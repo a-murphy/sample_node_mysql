@@ -16,4 +16,5 @@ describe('MySql Database', function () {
 
             done();
         });
+  });
 });
