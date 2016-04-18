@@ -11,8 +11,6 @@ describe('MySql Database', function () {
         .then(function (user) {
             console.log(user);
             user.get('email').should.eql('test@test.com');
-            Number(user.get('active')).should.eql(1);
-            Number(user.get('confirmed')).should.eql(0);
 
             done();
         });
