@@ -20,7 +20,7 @@ build:
     - mysql -e "GRANT SELECT,INSERT,UPDATE,DELETE ON name_test.* TO name@localhost IDENTIFIED BY ''; FLUSH PRIVILEGES;"
     #- cat ./config/knexplus.js
     #- (NODE_ENV=test knex --knexfile ./knexplus.js migrate:latest)
-    - (NODE_ENV=test knex --knexfile ./knexfile.js seed:run)
+    - (NODE_ENV=test knex --knexfile ./knexfile.js test)
 
     # Run the tests
     - mkdir -p shippable/testresults
