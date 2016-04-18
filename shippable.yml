@@ -1,25 +1,27 @@
 language: node_js
-
 node_js:
-  - 0.10.25
+  - "5.9.0"
 
 services:
   - mysql
 
-# For xunit-file module to put results in shippable folder
 env:
-  - XUNIT_FILE=shippable/testresults/result.xml
+  - NODE_ENV=test
 
-# Make folders for the reports, and create the SQL db
-before_script:
-  - mkdir -p shippable/testresults
-  - mkdir -p shippable/codecoverage
-  - mysql -e 'create database if not exists test;'
+build:
+    ci:
+    # Install the app/test dependencies
+    - npm install -g knex eslint
+    - npm install knex
+    - npm install
 
-script:
-  - npm test
+    # Prepare the test database
+    - mysql -e 'CREATE DATABASE mandrel_test CHARACTER SET=utf8 COLLATE=utf8_unicode_ci;'
+    - mysql -e "GRANT SELECT,INSERT,UPDATE,DELETE ON name_test.* TO name@localhost IDENTIFIED BY ''; FLUSH PRIVILEGES;"
+    #- cat ./config/knexplus.js
+    #- (NODE_ENV=test knex --knexfile ./knexplus.js migrate:latest)
+    - (NODE_ENV=test knex --knexfile ./knexfile.js seed:run)
 
-# Generate coverage report with istanbul
-after_script:
-  - ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha test.js -- -u tdd
-  - ./node_modules/.bin/istanbul report cobertura --dir  shippable/codecoverage/
+    # Run the tests
+    - mkdir -p shippable/testresults
+    - npm test
