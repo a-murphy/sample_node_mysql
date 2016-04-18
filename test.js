@@ -2,24 +2,18 @@ var db = require('./index.js').db,
     expect = require('chai').expect;
 
 describe('MySql Database', function () {
-  it('should create the things table', function () {
-    db.schema.hasTable('things').then(function (exists) {
-      expect(exists).to.equal(true);
-    });
-  });
-  it('should save a new name', function () {
-    db('things')
-      .insert({ name: 'Johnson' })
-      .exec(function (err) {
-        expect(err).to.equal(null);
-      });
-  });
-  it('should retrieve that name', function () {
-    db('things')
-      .where({ name: 'Johnson' })
-      .select('name')
-      .then(function (name) {
-        expect(name[0].name).to.equal('Johnson');
-      });
-  });
+  it.only('should default the new user to active, but unconfirmed', function (done) {
+    User.forge()
+        .save({ email: 'test@test.com', password: 'password' })
+        .then(function (savedUser) {
+            return savedUser.fetch();
+        })
+        .then(function (user) {
+            console.log(user);
+            user.get('email').should.eql('test@test.com');
+            Number(user.get('active')).should.eql(1);
+            Number(user.get('confirmed')).should.eql(0);
+
+            done();
+        });
 });
