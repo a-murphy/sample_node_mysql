@@ -10,7 +10,6 @@ services:
 env:
   - XUNIT_FILE=shippable/testresults/result.xml
 
-# Make folders for the reports, and create the SQL db
 before_script:
   - mkdir -p shippable/testresults
   - mkdir -p shippable/codecoverage
@@ -18,8 +17,8 @@ before_script:
 
 script:
   - npm test
+  - echo "done"
 
-# Generate coverage report with istanbul
 after_script:
   - ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha test.js -- -u tdd
   - ./node_modules/.bin/istanbul report cobertura --dir  shippable/codecoverage/
