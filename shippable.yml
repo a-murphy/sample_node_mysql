@@ -10,16 +10,14 @@ services:
 env:
   - XUNIT_FILE=shippable/testresults/result.xml
 
-before_script:
-  - echo "before script"
-  - mkdir -p shippable/testresults
-  - mkdir -p shippable/codecoverage
-  - mysql -e 'create database if not exists test;'
-
-script:
-  - npm test
-
-after_script:
-  - exit 0
-  - ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha test.js -- -u tdd
-  - ./node_modules/.bin/istanbul report cobertura --dir  shippable/codecoverage/
+build:
+  ci:
+    - echo "before script"
+    - mkdir -p shippable/testresults
+    - mkdir -p shippable/codecoverage
+    - mysql -e 'create database if not exists test;'
+    - npm test
+    - exit 0
+    - ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha test.js -- -u tdd
+    - ./node_modules/.bin/istanbul report cobertura --dir  shippable/codecoverage/
+  cache: true
